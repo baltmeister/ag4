@@ -4,7 +4,7 @@ Dies ist das Haupt-Repository des Mirror-Online-Projekts, einer Plattform, die e
 
 ## Nutzung des Tools
 
-Mehr Informationen zu verwendeten Tools, Software-Aufbau, Deployment uvm. befinden sich im Ordner [Dokumentation](./Dokumentation) dieses Repositories.
+Mehr Informationen zu verwendeten Tools, Software-Aufbau, Deployment uvm. befinden sich im Ordner [documentation](./documentation) dieses Repositories.
 
 #### 1. **Virtualenv und Python 3 installieren**
 Die Installation hängt von deinem Betriebssystem ab. Unter Linux (z. B. Ubuntu) kannst du folgende Befehle verwenden:
