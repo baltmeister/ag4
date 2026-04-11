@@ -1,5 +1,5 @@
-django==3.0.5
-djangorestframework==3.12.4
+django
+djangorestframework
 pillow
 django-allauth
 tk
