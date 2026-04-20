@@ -16,7 +16,117 @@
 
         <div class="comment-section">
             <h4 class="section-title">Alle Kommentare:</h4>
-            {% if comments %}
+            {% if pro_contra_layout %}
+                <!-- PRO/CONTRA LAYOUT -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+        
+                    <div>
+                        <h3 style="color: green; text-align: center;">✓ Pro</h3>
+                        {% for comment in pro_comments %}
+                        <div class="comment-card">
+                            <div class="comment-header">
+                                <h3 class="comment-title">{{ comment.title }}</h3>
+                                <strong class="comment-author">
+                                    von <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
+                                        {{ comment.author.user.username }}
+                                    </a>
+                                </strong>
+                                <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small>
+                            </div>
+                            <div class="comment-body">
+                                <p>{{ comment.content|truncatechars:100 }}</p>
+                            </div>
+                            {% if like_dislike_enabled %}
+                            <div class="comment-actions view-only">
+                                <div class="like-dislike-form">
+                                    <form method="post" action="{% url 'comments:like-comment-view' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                        <button type="submit" class="ui icon button">
+                                            <i class="thumbs up outline icon"></i>
+                                        </button>
+                                        <span>{{ comment.liked.count }}</span>
+                                    </form>
+                                    <form method="post" action="{% url 'comments:dislike-comment-view' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                        <button type="submit" class="ui icon button">
+                                            <i class="thumbs down outline icon"></i>
+                                        </button>
+                                        <span>{{ comment.disliked.count }}</span>
+                                    </form>
+                                </div>
+                            {% endif %}
+                                <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" 
+                                class="ui button read-more"
+                                data-comment-id="{{ comment.id }}"
+                                data-article-id="{{ article.id }}"
+                                data-action="read_and_interact">
+                                Mehr lesen und interagieren
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="no-comments">Keine Pro-Kommentare vorhanden.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div>
+                        <h3 style="color: red; text-align: center;">✗ Contra</h3>
+                        {% for comment in contra_comments %}
+                        <div class="comment-card">
+                            <div class="comment-header">
+                                <h3 class="comment-title">{{ comment.title }}</h3>
+                                <strong class="comment-author">
+                                    von <a href="{% url 'profiles:profile-detail-view' comment.author.slug %}">
+                                        {{ comment.author.user.username }}
+                                    </a>
+                                </strong>
+                                <small class="comment-date">{{ comment.created|date:"d.m.Y H:i" }}</small>
+                            </div>
+                            <div class="comment-body">
+                                <p>{{ comment.content|truncatechars:100 }}</p>
+                            </div>
+                            {% if like_dislike_enabled %}
+                            <div class="comment-actions view-only">
+                                <div class="like-dislike-form">
+                                    <form method="post" action="{% url 'comments:like-comment-view' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                        <button type="submit" class="ui icon button">
+                                            <i class="thumbs up outline icon"></i>
+                                        </button>
+                                        <span>{{ comment.liked.count }}</span>
+                                    </form>
+                                    <form method="post" action="{% url 'comments:dislike-comment-view' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                        <button type="submit" name="comment_id" value="{{ comment.id }}" class="ui icon button">
+                                            <i class="thumbs down outline icon"></i>
+                                        </button>
+                                        <span>{{ comment.disliked.count }}</span>
+                                    </form>
+                                </div>
+                            {% endif %}
+                                <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" 
+                                class="ui button read-more"
+                                data-comment-id="{{ comment.id }}"
+                                data-article-id="{{ article.id }}"
+                                data-action="read_and_interact">
+                                Mehr lesen und interagieren
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="no-comments">Keine Contra-Kommentare vorhanden.</p>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+            {% else %}
+                <!-- NORMALES LAYOUT -->
+                {% if comments %}
                 <div class="grid-container">
                     {% for comment in comments %}
                     <div class="comment-card">
@@ -35,7 +145,6 @@
                         {% if like_dislike_enabled %}
                         <div class="comment-actions view-only">
                             <div class="like-dislike-form">
-                                <!-- Like Button -->
                                 <form method="post" action="{% url 'comments:like-comment-view' %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="comment_id" value="{{ comment.id }}">
@@ -44,8 +153,6 @@
                                     </button>
                                     <span>{{ comment.liked.count }}</span>
                                 </form>
-
-                                <!-- Dislike Button -->
                                 <form method="post" action="{% url 'comments:dislike-comment-view' %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="comment_id" value="{{ comment.id }}">
@@ -55,7 +162,7 @@
                                     <span>{{ comment.disliked.count }}</span>
                                 </form>
                             </div>
-                            {% endif %}
+                        {% endif %}
                             <a href="{% url 'comments:detailed-comment' comment_id=comment.id news_paper_id=newspaper.id article_id=article.id %}" 
                             class="ui button read-more"
                             data-comment-id="{{ comment.id }}"
@@ -67,19 +174,83 @@
                     </div>
                     {% endfor %}
                 </div>
-            {% else %}
-                <p class="no-comments">Es gibt noch keine Kommentare für diesen Artikel.</p>
+                {% else %}
+                    <p class="no-comments">Es gibt noch keine Kommentare für diesen Artikel.</p>
+                {% endif %}
             {% endif %}
             <hr class="divider">
             <h4 class="section-title">Schreibe einen Kommentar:</h4>
+            {% if pro_contra_layout %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+    
+                <!-- PRO SPALTE -->
+                <div style="background-color: #e8f5e9; border-radius: 8px; padding: 15px; border: 2px solid #a5d6a7;">
+                    <h4 style="color: green; margin-bottom: 15px;">Pro-Kommentar schreiben</h4>
+                    <form method="post" class="comment-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="article_id" value="{{ article.id }}">
+                        <input type="hidden" name="side" value="pro">
+                        <input type="text" 
+                               name="title" 
+                               placeholder="Titel eingeben..." 
+                               class="form-input" 
+                               style="background-color: #f1f8f1; width: 100%; margin-bottom: 8px;"
+                               required>
+                        <textarea name="content" 
+                                  rows="4" 
+                                  placeholder="Schreibe deinen Pro-Kommentar..." 
+                                  class="form-textarea"
+                                  style="background-color: #f1f8f1; width: 100%; margin-bottom: 8px;"
+                                  required></textarea>
+                        <button type="submit" 
+                                name="submit_comment_form" 
+                                class="submit-btn"
+                                style="background-color: green; width: 100%;">
+                            Pro-Kommentar absenden
+                        </button>
+                    </form>
+                </div>
+
+                <!-- CONTRA SPALTE -->
+                <div style="background-color: #ffebee; border-radius: 8px; padding: 15px; border: 2px solid #ef9a9a;">
+                    <h4 style="color: red; margin-bottom: 15px;">Contra-Kommentar schreiben</h4>
+                    <form method="post" class="comment-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="article_id" value="{{ article.id }}">
+                        <input type="hidden" name="side" value="contra">
+                        <input type="text" 
+                               name="title" 
+                               placeholder="Titel eingeben..." 
+                               class="form-input"
+                               style="background-color: #fff5f5; width: 100%; margin-bottom: 8px;"
+                               required>
+                        <textarea name="content" 
+                                  rows="4" 
+                                  placeholder="Schreibe deinen Contra-Kommentar..." 
+                                  class="form-textarea"
+                                  style="background-color: #fff5f5; width: 100%; margin-bottom: 8px;"
+                                  required></textarea>
+                        <button type="submit" 
+                                name="submit_comment_form" 
+                                class="submit-btn"
+                                style="background-color: red; width: 100%;">
+                            Contra-Kommentar absenden
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            {% else %}
+            <!-- Normales Formular -->
             <form method="post" class="comment-form">
                 {% csrf_token %}
-                <!-- Verstecktes Feld für Artikel-ID Logging -->
                 <input type="hidden" name="article_id" value="{{ article.id }}">
                 <input type="text" name="title" placeholder="Titel eingeben..." class="form-input" required>
                 <textarea name="content" rows="3" placeholder="Kommentar hinzufügen..." class="form-textarea" required></textarea>
                 <button type="submit" name="submit_comment_form" class="submit-btn">Senden</button>
-            </form> 
+            </form>
+            {% endif %}
         </div>
     </div>
 </div>

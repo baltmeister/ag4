@@ -24,6 +24,12 @@ class CommentModelForm(forms.ModelForm):
         ),
         initial=_("Default comment content")  # Default value for content
     )
+    side = forms.ChoiceField(
+        choices=[('pro', 'Pro'), ('contra', 'Contra')],
+        widget=forms.RadioSelect,
+        required=False,
+        label="Position"
+    )
 
     class Meta:
         model = Comment

@@ -144,13 +144,30 @@ def detailed_article(request, news_paper_id, slug):
     print(f"Condition des Nutzers: {condition_tag}")  # Debugging
 
 
-    public_comments_count = article.comments.filter(
-      Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)  # Filter für passende Tags
-    ).filter(
-        Q(is_public=True) | Q(author=profile)
-    ).filter(
-        Q(parent_comment=None)
-    ).values_list('id', flat=True).count()
+
+    # NEU: Configuration laden
+    from configuration.models import get_the_config
+    config = get_the_config()
+
+    if config.pro_contra_layout:
+        # Im Pro/Contra-Layout nur Kommentare mit tag 'pro' oder 'contra' zählen
+        public_comments_count = article.comments.filter(
+            Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)
+        ).filter(
+            side__in=['pro', 'contra']
+        ).filter(
+            Q(is_public=True) | Q(author=profile)
+        ).filter(
+            Q(parent_comment=None)
+        ).values_list('id', flat=True).count()
+    else:
+        public_comments_count = article.comments.filter(
+            Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)  # Filter für passende Tags
+        ).filter(
+            Q(is_public=True) | Q(author=profile)
+        ).filter(
+            Q(parent_comment=None)
+        ).values_list('id', flat=True).count()
 
     context = {
         'article': article, 

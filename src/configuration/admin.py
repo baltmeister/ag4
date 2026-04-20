@@ -22,6 +22,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
         "max_session_duration",
         "management_token",
         "is_active",
+        "pro_contra_layout",
     ]
     fields = [
         "like_dislike_enabled",
@@ -29,6 +30,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
         "max_session_duration",
         "management_token",
         "is_active",
+        "pro_contra_layout",
     ]
     actions = ["set_as_active"]
 

@@ -163,26 +163,44 @@ def article_comments_view(request, news_paper_id, article_id):
     if request.method == "POST" and 'submit_comment_form' in request.POST:
         comment_form = CommentModelForm(request.POST)
         if comment_form.is_valid():
-            save_comment(
+            new_comment = save_comment(
                 form=comment_form,
                 profile=profile,
                 article=article,
-                is_public=request.user.is_staff,  # Admin-Kommentare sind direkt öffentlich
-                is_secondary=False, 
+                is_public=request.user.is_staff,
+                is_secondary=False,
             )
+            if config.pro_contra_layout:
+                side = request.POST.get('side', '')
+                if side in ('pro', 'contra'):
+                    new_comment.side = side
+                    new_comment.save()
+
             messages.success(request, _("Dein Kommentar wurde erfolgreich hinzugefügt!"))
-            return redirect('comments:article-comments', news_paper_id=newspaper.id, article_id=article.id)
+            return redirect('comments:article-comments',
+                           news_paper_id=newspaper.id,
+                           article_id=article.id)
         else:
             messages.error(request, _("Es gab einen Fehler beim Hinzufügen deines Kommentars."))
-
     # 6. Kontextdaten für das Template
+
+    # Kommentare aufteilen falls Pro/Contra-Layout aktiv
+    if config.pro_contra_layout:
+        pro_comments = [c for c in main_comments if c.side == 'pro']
+        contra_comments = [c for c in main_comments if c.side == 'contra']
+    else:
+        pro_comments = []
+        contra_comments = []
+
     context = {
         'newspaper': newspaper,
         'article': article,
         'comments': main_comments,  # Hauptkommentare in zufälliger Reihenfolge
         'comment_form': comment_form,
         'like_dislike_enabled': config.like_dislike_enabled,  # Wert an das Template übergeben
-
+        'pro_contra_layout': config.pro_contra_layout,
+        'pro_comments': pro_comments,
+        'contra_comments': contra_comments,
     }
     return render(request, 'comments/article_comments.html', context)
 

@@ -9,6 +9,11 @@ class Configuration(models.Model):
     is_timer_enabled = models.BooleanField(default=False)
     max_session_duration = models.PositiveIntegerField(default=3600)
     is_active = models.BooleanField(default=False, help_text="Markiert die aktive Konfiguration")
+    pro_contra_layout = models.BooleanField(
+        default=False,
+        help_text="Kommentare in Pro/Contra-Spalten anzeigen (Pro = tag 'pro', Contra = tag 'contra')"
+    )
+
 
     def save(self, *args, **kwargs):
         """Stellt sicher, dass nur eine Konfiguration aktiv ist."""

@@ -81,9 +81,10 @@ LOGOUT_REDIRECT_URL = '/questions/end/'
 ACCOUNT_FORMS = {
     'signup': 'fakebook.forms.CustomSignupForm',  # Passe `your_app` an den Namen deiner App an
 }
-ACCOUNT_AUTHENTICATION_METHOD = "username"  # Nur Username für Authentifizierung
-ACCOUNT_EMAIL_REQUIRED = False  # Email wird nicht benötigt
-ACCOUNT_USERNAME_REQUIRED = True  # Username bleibt Pflichtfeld
+ACCOUNT_LOGIN_METHODS = {'username'}  # Nur Username für Authentifizierung
+# ACCOUNT_EMAIL_REQUIRED = False  # Email wird nicht benötigt
+# ACCOUNT_USERNAME_REQUIRED = True  # Username bleibt Pflichtfeld
+ACCOUNT_SIGNUP_FIELDS = ['username*', 'password1*', 'password2*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 
@@ -94,6 +95,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -142,9 +144,9 @@ AUTHENTICATION_BACKENDS = [
 WSGI_APPLICATION = 'fakebook.wsgi.application'
 
 #for demo data usage: 
-# DATA_DIRECTORY = "data.demo" #einkommentieren fuer local debugging in development
+DATA_DIRECTORY = "data.demo" #einkommentieren fuer local debugging in development
 # Data directory
-DATA_DIRECTORY = os.environ['DATA_DIRECTORY'] if 'DATA_DIRECTORY' in os.environ else "data"
+# DATA_DIRECTORY = os.environ['DATA_DIRECTORY'] if 'DATA_DIRECTORY' in os.environ else "data"
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

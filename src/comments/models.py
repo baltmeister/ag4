@@ -22,7 +22,8 @@ class Comment(models.Model):
     is_public = models.BooleanField(default=True,  help_text="Muss öffentlich sein, um der Versuchsperson angezeigt zu werden.") # Gibt an, ob der Kommentar öffentlich ist
     liked = models.ManyToManyField(Profile, related_name="liked_comments_set", blank=True, help_text="Nur möglich für Primärkommentare.")
     disliked = models.ManyToManyField(Profile, related_name="disliked_comments_set", blank=True, help_text="Nur möglich für Primärkommentare.")
-
+    SIDE_CHOICES = [('pro', 'Pro'), ('contra', 'Contra')]
+    side = models.CharField(max_length=10, choices=SIDE_CHOICES, blank=True) #Gibt an, ob der Kommentar Pro oder gegen den Artikel ist (optional)
     def __str__(self):
         # Kürze den Inhalt auf maximal 50 Zeichen
         content_preview = self.content[:50] + ("..." if len(self.content) > 50 else "")
