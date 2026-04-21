@@ -6,11 +6,14 @@ from .models import Question, Answer, Text, Consent
 from django.contrib.auth.forms import AuthenticationForm
 from analytics.models import UserEventLog
 from analytics.utils import create_event_log
+from configuration.models import get_the_config
+from articles.models import Article
 
 import json
 
 @login_required
 def redirect_to_questions(request):
+    config = get_the_config()
     # Prüfen, ob es unbeantwortete "before"-Fragen gibt
     unanswered_questions = Question.objects.filter(label='before').exclude(
         id__in=Answer.objects.filter(user=request.user).values_list('question_id', flat=True)
@@ -21,7 +24,23 @@ def redirect_to_questions(request):
         return redirect('questions:questions_before')
     
     # Andernfalls zu einer anderen Seite (z. B. Dashboard oder Newspaper)
-    return redirect('articles:news-papers')
+    if config.start_view == 'article_list' and config.start_newspaper_id:
+        return redirect('articles:all-articles',
+                       news_paper_id=config.start_newspaper_id)
+
+    elif config.start_view == 'article' and config.start_article_id:
+        # Artikel aus der Datenbank holen um news_paper_id und slug zu bekommen
+        try:
+            article = Article.objects.get(id=config.start_article_id)
+            return redirect('articles:detailed-article',
+                           news_paper_id=article.news_paper_id,
+                           slug=article.slug)
+        except Article.DoesNotExist:
+            # Fallback zur Zeitungsübersicht wenn Artikel nicht gefunden
+            return redirect('articles:news-papers')
+
+    else:
+        return redirect('articles:news-papers')
 
 from django.shortcuts import render, redirect
 from .models import Question, Answer

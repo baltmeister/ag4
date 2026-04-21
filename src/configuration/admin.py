@@ -23,6 +23,9 @@ class ConfigurationAdmin(admin.ModelAdmin):
         "management_token",
         "is_active",
         "pro_contra_layout",
+        "start_view",
+        "start_newspaper_id",
+        "start_article_id",
     ]
     fields = [
         "like_dislike_enabled",
@@ -31,6 +34,9 @@ class ConfigurationAdmin(admin.ModelAdmin):
         "management_token",
         "is_active",
         "pro_contra_layout",
+        "start_view",
+        "start_newspaper_id",
+        "start_article_id",
     ]
     actions = ["set_as_active"]
 

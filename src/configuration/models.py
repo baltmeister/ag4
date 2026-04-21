@@ -11,7 +11,29 @@ class Configuration(models.Model):
     is_active = models.BooleanField(default=False, help_text="Markiert die aktive Konfiguration")
     pro_contra_layout = models.BooleanField(
         default=False,
-        help_text="Kommentare in Pro/Contra-Spalten anzeigen (Pro = tag 'pro', Contra = tag 'contra')"
+        help_text="Kommentare in Pro/Contra-Spalten anzeigen"
+    )
+
+    START_VIEW_CHOICES = [
+        ('newspapers', 'Zeitungsübersicht'),
+        ('article_list', 'Artikelübersicht einer Zeitung'),
+        ('article', 'Direkt zu einem Artikel'),
+    ]
+    start_view = models.CharField(
+        max_length=20,
+        choices=START_VIEW_CHOICES,
+        default='newspapers',
+        help_text="Wohin werden Versuchspersonen nach den Vor-Fragen weitergeleitet?"
+    )
+    start_newspaper_id = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Nur relevant wenn Start-Ansicht 'Artikelübersicht' Zeitung ID eingeben"
+    )
+    start_article_id = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text="Nur relevant wenn Start-Ansicht 'Direkt zu Artikel'. Artikel ID eingeben"
     )
 
 
