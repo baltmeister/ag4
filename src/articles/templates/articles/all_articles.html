@@ -3,13 +3,13 @@
 {% load i18n %}
 
 {% block title %}
-Articles
+Artikelübersicht
 {% endblock title %}
 
 {% block content %}
 <a href="{% url 'articles:news-papers' %}" class="back-link">← Zurück zur Zeitungsauswahl</a>
 <div class="ui articles-container">
- <h1 class="ui header">Articles</h1>
+ <h1 class="ui header">Artikelübersicht</h1>
 
   {% if articles %}
     <!-- Grid für die Artikelübersicht -->
