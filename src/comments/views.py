@@ -52,7 +52,7 @@ import random
 def article_comments_view(request, news_paper_id, article_id):
     user = request.user
     article = get_object_or_404(Article, id=article_id)
-    profile = Profile.objects.get(user=request.user)
+    profile = get_object_or_404(Profile, user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
     comment_type = ContentType.objects.get_for_model(Comment)
     config = get_the_config()
@@ -188,7 +188,51 @@ def article_comments_view(request, news_paper_id, article_id):
     if config.pro_contra_layout:
         pro_comments = [c for c in main_comments if c.side == 'pro']
         contra_comments = [c for c in main_comments if c.side == 'contra']
+
+        # Reihenfolge der Spalten zufällig aber stabil pro User
+        layout_type = ContentType.objects.get_for_model(Comment)  # kannst du auch eigenes "Layout" Model machen
+
+        layout_entry = UserContentPosition.objects.filter(
+            user=user,
+            content_type=layout_type,
+            object_id=0  # spezielle ID für Layout
+        ).first()
+
+        if not layout_entry:
+            #choice = random.choice(['pro_left', 'contra_left'])
+            choice = 'contra_left'
+            layout_entry = UserContentPosition.objects.create(
+                user=user,
+                content_type=layout_type,
+                object_id=0,
+                position=1 if choice == 'pro_left' else 2
+            )
+        if layout_entry.position == 1:
+            order = 'pro_left'
+        else:
+            order = 'contra_left'
+
+        if order == 'contra_left':
+            left_comments = contra_comments
+            right_comments = pro_comments
+            left_label = 'Contra'
+            right_label = 'Pro'
+            left_side = 'contra'
+            right_side = 'pro'
+        else:
+            left_comments = pro_comments
+            right_comments = contra_comments
+            left_label = 'Pro'
+            right_label = 'Contra'
+            left_side = 'pro'
+            right_side = 'contra'
     else:
+        left_comments = []
+        right_comments = []
+        left_label = ''
+        right_label = ''
+        left_side = ''
+        right_side = ''
         pro_comments = []
         contra_comments = []
 
@@ -201,6 +245,12 @@ def article_comments_view(request, news_paper_id, article_id):
         'pro_contra_layout': config.pro_contra_layout,
         'pro_comments': pro_comments,
         'contra_comments': contra_comments,
+        'left_comments': left_comments,
+        'right_comments': right_comments,
+        'left_label': left_label,
+        'right_label': right_label,
+        'left_side': left_side,
+        'right_side': right_side,
     }
     return render(request, 'comments/article_comments.html', context)
 
