@@ -199,8 +199,7 @@ def article_comments_view(request, news_paper_id, article_id):
         ).first()
 
         if not layout_entry:
-            #choice = random.choice(['pro_left', 'contra_left'])
-            choice = 'contra_left'
+            choice = random.choice(['pro_left', 'contra_left'])
             layout_entry = UserContentPosition.objects.create(
                 user=user,
                 content_type=layout_type,
