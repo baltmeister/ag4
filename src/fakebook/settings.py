@@ -97,6 +97,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'fakebook.middleware.NewspaperTimerMiddleware',
@@ -128,7 +129,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'profiles.context_processors.profile_pic',
                 'questions.context_processors.global_settings',
-                'questions.context_processors.session_config'
+                'questions.context_processors.session_config',
+                'questions.context_processors.start_view_mode'
             ],
         },
     },

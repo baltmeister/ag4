@@ -23,6 +23,8 @@ def redirect_to_questions(request):
     if unanswered_questions.exists():
         return redirect('questions:questions_before')
     
+    request.session['start_view'] = config.start_view
+    
     # Andernfalls zu einer anderen Seite (z. B. Dashboard oder Newspaper)
     if config.start_view == 'article_list' and config.start_newspaper_id:
         return redirect('articles:all-articles',

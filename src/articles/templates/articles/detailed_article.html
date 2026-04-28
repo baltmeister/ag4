@@ -5,7 +5,11 @@
 {% endblock title %}
 
 {% block content %}
-<a href="{% url 'articles:all-articles' news_paper_id=newspaper.id %}" class="back-link">← Zurück zur Artikelübersicht</a>
+{% if start_view_mode != 'article' %}
+    <a href="{% url 'articles:all-articles' news_paper_id=newspaper.id %}" class="back-link">
+        ← Zurück zur Artikelübersicht
+    </a>
+{% endif %}
 <div class="styled-article-container">
   <!-- Header mit Bild, Titel und Metadaten -->
   <div class="article-header">

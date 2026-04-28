@@ -22,7 +22,7 @@
     <div class="ui container">
 
       <!-- Home-Button -->
-       {% if not is_questions_page %}
+       {% if not is_questions_page and start_view_mode == 'newspapers'%}
       <a href="{{ path_to_news_papers }}" class="item {% if request.path == path_to_news_papers %}active{% endif %}">
         <i class="home icon"></i> Zeitungsübersicht
       </a>
