@@ -28,9 +28,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'n*vms&0n)98o4py0vpydyu1l3-qt2%g*hm8c5n31fg+)8bh@zy'
 
 # SECURITY WARNING: don't run with debug turned on in production! ##aenderungJuliane
-DEBUG_MODE = True ##auskommentieren in development
+DEBUG_MODE = False ##auskommentieren in development
 
-DEBUG = True 
+DEBUG = False 
 # DEBUG = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
 
 # if DEBUG:
