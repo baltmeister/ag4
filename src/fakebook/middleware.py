@@ -47,9 +47,31 @@ class NewspaperTimerMiddleware:
             max_session_duration = config.max_session_duration if config.max_session_duration else 3600
 
             # Set entry time for '/newspapers/' path if not already set
-            if request.path == reverse('articles:news-papers') and 'newspaper_entry_time' not in request.session:
-                request.session['newspaper_entry_time'] = now().isoformat()
-                logger.debug(f"Newspaper entry time set: {request.session['newspaper_entry_time']}")
+            logger.debug(f"1")
+            if 'newspaper_entry_time' not in request.session:
+                should_start_timer = False
+                logger.debug(f"2")
+                if request.path == reverse('articles:news-papers'):
+                        should_start_timer = True
+
+                if config.start_newspaper_id:
+                    if request.path == reverse('articles:all-articles',
+                                            kwargs={'news_paper_id': config.start_newspaper_id}):
+                        should_start_timer = True
+
+                if config.start_article_id:
+                    from articles.models import Article
+                    article = Article.objects.get(id=config.start_article_id)
+                    if request.path == reverse('articles:detailed-article',
+                                            kwargs={
+                                                'news_paper_id': article.news_paper_id,
+                                                'slug': article.slug
+                                            }):
+                        should_start_timer = True
+
+                if should_start_timer:
+                    request.session['newspaper_entry_time'] = now().isoformat()
+                    logger.debug(f"Newspaper entry time set: {request.session['newspaper_entry_time']}")
 
             # Check the timer and redirect if the duration exceeds the max limit
             newspaper_entry_time = request.session.get('newspaper_entry_time')

@@ -24,7 +24,7 @@ def redirect_to_questions(request):
         return redirect('questions:questions_before')
     
     request.session['start_view'] = config.start_view
-    
+
     # Andernfalls zu einer anderen Seite (z. B. Dashboard oder Newspaper)
     if config.start_view == 'article_list' and config.start_newspaper_id:
         return redirect('articles:all-articles',
@@ -152,7 +152,26 @@ def question_list(request, label):
         if not unanswered_questions.exists():
 
             if label == 'before':
-                return redirect('articles:news-papers')  # Newspaper-Seite
+                config = get_the_config()
+                request.session['start_view'] = config.start_view
+                # Andernfalls zu einer anderen Seite (z. B. Dashboard oder Newspaper)
+                if config.start_view == 'article_list' and config.start_newspaper_id:
+                    return redirect('articles:all-articles',
+                                news_paper_id=config.start_newspaper_id)
+
+                elif config.start_view == 'article' and config.start_article_id:
+                    # Artikel aus der Datenbank holen um news_paper_id und slug zu bekommen
+                    try:
+                        article = Article.objects.get(id=config.start_article_id)
+                        return redirect('articles:detailed-article',
+                                    news_paper_id=article.news_paper_id,
+                                    slug=article.slug)
+                    except Article.DoesNotExist:
+                        # Fallback zur Zeitungsübersicht wenn Artikel nicht gefunden
+                        return redirect('articles:news-papers')
+
+                else:
+                    return redirect('articles:news-papers')
             elif label == 'after':
                 return redirect('questions:experiment_end')
 
