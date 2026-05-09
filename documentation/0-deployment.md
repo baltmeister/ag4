@@ -33,7 +33,7 @@ Sind Docker und Git installiert? Dann kann es jetzt losgehen! Öffne einen Edito
 Öffne ein Terminal und gib folgenden Befehl ein, um das Repo zu klonen und ins Projektverzeichnis wechseln
 
 ```sh
-git clone https://github.com/Julreut/ag4.git
+git clone https://github.com/baltmeister/ag4.git
 cd ag4
 ```
 

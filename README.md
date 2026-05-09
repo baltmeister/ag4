@@ -19,7 +19,7 @@ sudo pip install virtualenv
 Öffne ein Terminal und gib folgenden Befehl ein, um das Repo zu klonen und ins Projektverzeichnis wechseln
 
 ```sh
-git clone https://github.com/Julreut/ag4.git
+git clone https://github.com/baltmeister/ag4.git
 cd ag4
 ```
 → Dieser Befehl lädt den Quellcode von GitHub herunter und wechselt in das Projektverzeichnis.
