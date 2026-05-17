@@ -7,36 +7,6 @@ class UserEventLog(models.Model):
     event_data = models.TextField(blank=True, null=True)  # e.g., article ID, comment text
     timestamp = models.DateTimeField() ##possible: auto_now_add=True
 
-class NewspaperClick(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    newspaper_id = models.IntegerField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Newspaper Click"
-
-class ArticleClick(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    article_id = models.IntegerField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Article Click"
-
-class CommentPageClick(models.Model):
-    CLICK_TYPE_CHOICES = [
-        ('comments', 'Zu den Kommentaren'),
-        ('agree', 'Stimme zu'),
-        ('disagree', 'Stimme nicht zu'),
-    ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    article_id = models.IntegerField()
-    click_type = models.CharField(max_length=20, choices=CLICK_TYPE_CHOICES)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = "Comment Page Click"
-
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
