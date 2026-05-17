@@ -69,7 +69,6 @@ def get_newspapers(request):
     ).order_by('position')
     
     news_papers = [pos.content_object for pos in newspaper_positions]
-
     return render(request, 'articles/news_papers.html', {'news_papers': news_papers})
 ## Article definitions
 @login_required
@@ -145,12 +144,12 @@ def detailed_article(request, news_paper_id, slug):
 
 
 
-    # NEU: Configuration laden
+    # load Configuration
     from configuration.models import get_the_config
     config = get_the_config()
 
     if config.pro_contra_layout:
-        # Im Pro/Contra-Layout nur Kommentare mit tag 'pro' oder 'contra' zählen
+        # In Pro/Contra-Layout nur Kommentare mit 'pro' oder 'contra' zählen
         public_comments_count = article.comments.filter(
             Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)
         ).filter(
@@ -169,10 +168,30 @@ def detailed_article(request, news_paper_id, slug):
             Q(parent_comment=None)
         ).values_list('id', flat=True).count()
 
+    #
+    if config.pro_contra_layout:
+        session_key = f'agreement_order_{article.id}'
+        if session_key not in request.session:
+            import random
+            request.session[session_key] = random.choice(['agree_left', 'disagree_left'])
+
+        if request.session[session_key] == 'agree_left':
+            left_button = ('agree', 'Stimme zu und weiter zu den Kommentaren', 'green')
+            right_button = ('disagree', 'Stimme nicht zu und weiter zu den Kommentaren', 'red')
+        else:
+            left_button = ('disagree', 'Stimme nicht zu und weiter zu den Kommentaren', 'red')
+            right_button = ('agree', 'Stimme zu und weiter zu den Kommentaren', 'green')
+    else:
+        left_button = None
+        right_button = None
+
     context = {
         'article': article, 
         'newspaper': newspaper,
         'public_comments_count': public_comments_count,
+        'left_button': left_button,
+        'right_button': right_button,
+        'pro_contra_layout': config.pro_contra_layout,
     }
     return render(request, 'articles/detailed_article.html', context)
 

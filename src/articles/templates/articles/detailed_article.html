@@ -26,13 +26,25 @@
   </div>
 
   <!-- Footer mit Zurück-Button -->
-  <div class="ui center aligned container">
-    <a href="{% url 'comments:article-comments' news_paper_id=newspaper.id article_id=article.id %}"
-    class="ui button">
-    <i class="right arrow icon"></i>
-        Kommentare ansehen ({{ public_comments_count }})
-    </a>
-  </div>
+  {% if pro_contra_layout %}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+        <a href="{% url 'comments:article-comments' news_paper_id=newspaper.id article_id=article.id %}"
+           class="ui button"
+           style="text-align: center; color: white;">
+            {{ left_button.1 }}
+        </a>
+        <a href="{% url 'comments:article-comments' news_paper_id=newspaper.id article_id=article.id %}"
+           class="ui button"
+           style="text-align: center; color: white;">
+            {{ right_button.1 }}
+        </a>
+    </div>
+  {% else %}
+      <a href="{% url 'comments:article-comments' news_paper_id=newspaper.id article_id=article.id %}" 
+        class="ui button">
+          Kommentare ansehen ({{ public_comments_count }})
+      </a>
+  {% endif %}
 </div>
 {% endblock content %}
 

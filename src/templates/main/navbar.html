@@ -27,6 +27,16 @@
         <i class="home icon"></i> Zeitungsübersicht
       </a>
       {% endif %}
+      {% if not is_questions_page and start_view_mode == 'article_list'%}
+      <a href="{{ path_to_article_list }}" class="item {% if request.path == path_to_article_list %}active{% endif %}">
+        <i class="home icon"></i> Artikelübersicht
+      </a>
+      {% endif %}
+      {% if not is_questions_page and start_view_mode == 'article'%}
+      <a href="{{ path_to_article }}" class="item {% if request.path == path_to_article %}active{% endif %}">
+        <i class="home icon"></i> Zurück zum Artikel
+      </a>
+      {% endif %}
 
       <!-- Rechte Seite der Navigation -->
       <div class="right menu">
