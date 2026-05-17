@@ -176,11 +176,11 @@ def detailed_article(request, news_paper_id, slug):
             request.session[session_key] = random.choice(['agree_left', 'disagree_left'])
 
         if request.session[session_key] == 'agree_left':
-            left_button = ('agree', 'Stimme zu und weiter zu den Kommentaren', 'green')
-            right_button = ('disagree', 'Stimme nicht zu und weiter zu den Kommentaren', 'red')
+            left_button = ('agree', 'Ja und weiter zu den Kommentaren', 'green')
+            right_button = ('disagree', 'Nein und weiter zu den Kommentaren', 'red')
         else:
-            left_button = ('disagree', 'Stimme nicht zu und weiter zu den Kommentaren', 'red')
-            right_button = ('agree', 'Stimme zu und weiter zu den Kommentaren', 'green')
+            left_button = ('disagree', 'Nein und weiter zu den Kommentaren', 'red')
+            right_button = ('agree', 'Ja und weiter zu den Kommentaren', 'green')
     else:
         left_button = None
         right_button = None

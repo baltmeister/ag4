@@ -214,15 +214,15 @@ def article_comments_view(request, news_paper_id, article_id):
         if order == 'contra_left':
             left_comments = contra_comments
             right_comments = pro_comments
-            left_label = 'Contra'
-            right_label = 'Pro'
+            left_label = 'Nein'
+            right_label = 'Ja'
             left_side = 'contra'
             right_side = 'pro'
         else:
             left_comments = pro_comments
             right_comments = contra_comments
-            left_label = 'Pro'
-            right_label = 'Contra'
+            left_label = 'Ja'
+            right_label = 'Nein'
             left_side = 'pro'
             right_side = 'contra'
     else:
