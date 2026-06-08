@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from .models import NewsPaper
-from analytics.models import UserContentPosition
+from analytics.models import UserContentPosition, NewspaperClick, ArticleClick, CommentPageClick
 
 @login_required
 def get_newspapers(request):
@@ -77,6 +77,9 @@ def article_list(request, news_paper_id):
     profile = user.profile
     article_type = ContentType.objects.get_for_model(Article)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
+
+    # Klick loggen
+    NewspaperClick.objects.create(user=user, newspaper_id=news_paper_id)
 
     # Bedingung des Nutzers
     condition_tag = profile.condition.tag if profile.condition else None
@@ -138,13 +141,25 @@ def detailed_article(request, news_paper_id, slug):
     # Abrufen des spezifischen Artikels anhand des Slugs
     article = get_object_or_404(Article, slug=slug, news_paper_id=news_paper_id)
     profile = Profile.objects.get(user=request.user)
-
     condition_tag = profile.condition.tag if profile.condition else None
     print(f"Condition des Nutzers: {condition_tag}")  # Debugging
 
+    # Pro/Contra-Button wurde geklickt
+    if request.method == "POST":
+        agreement = request.POST.get('agreement', 'comments')
+        CommentPageClick.objects.create(
+            user=request.user,
+            article_id=article.id,
+            click_type=agreement
+        )
+        return redirect('comments:article-comments',
+                        news_paper_id=newspaper.id,
+                        article_id=article.id)
 
+    # Klick loggen
+    ArticleClick.objects.create(user=request.user, article_id=article.id)
 
-    # load Configuration
+    # Konfiguration laden
     from configuration.models import get_the_config
     config = get_the_config()
 

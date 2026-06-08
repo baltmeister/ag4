@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from django.contrib.contenttypes.models import ContentType
-from analytics.models import UserContentPosition
+from analytics.models import UserContentPosition, CommentPageClick
 import random
 
 from .models import Comment
@@ -57,6 +57,13 @@ def article_comments_view(request, news_paper_id, article_id):
     comment_type = ContentType.objects.get_for_model(Comment)
     config = get_the_config()
 
+    # Nur loggen wenn kein Pro/Contra (dort läuft es über POST in detailed_article)
+    if not config.pro_contra_layout:
+        CommentPageClick.objects.create(
+            user=user,
+            article_id=article_id,
+            click_type='comments'
+        )
 
     # Prüfen, ob der Nutzer eine Bedingung hat
     condition_tag = profile.condition.tag if profile.condition else None
