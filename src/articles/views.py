@@ -144,18 +144,6 @@ def detailed_article(request, news_paper_id, slug):
     condition_tag = profile.condition.tag if profile.condition else None
     print(f"Condition des Nutzers: {condition_tag}")  # Debugging
 
-    # Pro/Contra-Button wurde geklickt
-    if request.method == "POST":
-        agreement = request.POST.get('agreement', 'comments')
-        CommentPageClick.objects.create(
-            user=request.user,
-            article_id=article.id,
-            click_type=agreement
-        )
-        return redirect('comments:article-comments',
-                        news_paper_id=newspaper.id,
-                        article_id=article.id)
-
     # Klick loggen
     ArticleClick.objects.create(user=request.user, article_id=article.id)
 
@@ -164,6 +152,9 @@ def detailed_article(request, news_paper_id, slug):
     config = get_the_config()
 
     if config.pro_contra_layout:
+        return redirect('articles:article-agreement',
+                        news_paper_id=news_paper_id,
+                        slug=slug)
         # In Pro/Contra-Layout nur Kommentare mit 'pro' oder 'contra' zählen
         public_comments_count = article.comments.filter(
             Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)
@@ -183,45 +174,39 @@ def detailed_article(request, news_paper_id, slug):
             Q(parent_comment=None)
         ).values_list('id', flat=True).count()
 
-    #
-    if config.pro_contra_layout:
-        session_key = f'agreement_order_{article.id}'
-        if session_key not in request.session:
-            import random
-            request.session[session_key] = random.choice(['agree_left', 'disagree_left'])
-
-        if request.session[session_key] == 'agree_left':
-            left_button = ('agree', 'Ja und weiter zu den Kommentaren', 'green')
-            right_button = ('disagree', 'Nein und weiter zu den Kommentaren', 'red')
-        else:
-            left_button = ('disagree', 'Nein und weiter zu den Kommentaren', 'red')
-            right_button = ('agree', 'Ja und weiter zu den Kommentaren', 'green')
-    else:
-        left_button = None
-        right_button = None
-
     context = {
         'article': article, 
         'newspaper': newspaper,
         'public_comments_count': public_comments_count,
-        'left_button': left_button,
-        'right_button': right_button,
         'pro_contra_layout': config.pro_contra_layout,
     }
     return render(request, 'articles/detailed_article.html', context)
 
-#track newspaper interactions
-# @login_required
-# def click_newspaper(request, pk):
-#     user = request.user
-#     ad_obj = get_newspapers.objects.get(id=pk)
-#     profile = Profile.objects.get(user=user)
+@login_required
+def article_agreement(request, news_paper_id, slug):
+    newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
+    article = get_object_or_404(Article, slug=slug, news_paper_id=news_paper_id)
 
-#     if profile not in ad_obj.user_clicked.all():
-#         ad_obj.user_clicked.add(profile)
+    question = article.agreement_question if article.agreement_question else \
+        "Stimmen Sie dem Inhalt dieses Artikels zu?"
 
-#     ad_obj.num_clicked += 1
-#     ad_obj.save()
+    if request.method == "POST":
+        choice = request.POST.get('agreement')
+        if choice in ('agree', 'disagree'):
+            CommentPageClick.objects.create(
+                user=request.user,
+                article_id=article.id,
+                click_type=choice
+            )
+            # Auswahl in Session speichern für Kommentarseite
+            request.session[f'agreement_{article.id}'] = choice
+            return redirect('comments:article-comments',
+                            news_paper_id=newspaper.id,
+                            article_id=article.id)
 
-#     return redirect(ad_obj.url)
-
+    context = {
+        'article': article,
+        'newspaper': newspaper,
+        'question': question,
+    }
+    return render(request, 'articles/article_agreement.html', context)

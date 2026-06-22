@@ -52,8 +52,8 @@ class ArticleAdminForm(forms.ModelForm):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'tag', 'news_paper_id')  # Zeigt ID, Titel, Vorschau, Tag und zugehörige Zeitung
-    search_fields = ('title', 'content', 'tag', 'news_paper_id')  # Ermöglicht Suche nach Titel, Content, Tag und zugehöriger Zeitung
+    list_display = ('id', 'title', 'tag', 'news_paper_id', 'agreement_question')  # Zeigt ID, Titel, Vorschau, Tag und zugehörige Zeitung
+    search_fields = ('title', 'content', 'tag', 'news_paper_id', 'agreement_question')  # Ermöglicht Suche nach Titel, Content, Tag und zugehöriger Zeitung
     ordering = ('id',)  # Sortiert nach ID
     list_filter = ('tag', 'news_paper_id')  # Filter für Tag und Zeitung
 

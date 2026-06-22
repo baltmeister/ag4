@@ -21,7 +21,8 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     tag = models.CharField(max_length=50, default='', blank=True)  #optional Tag für die Versuchsbedingung
-    
+    agreement_question = models.CharField(max_length=255, blank=True, default='', help_text="Optionale Zustimmungsfrage vor dem Artikel (nur im Pro/Contra-Design). Leer lassen für Standardfrage.")
+
     def save(self, *args, **kwargs):
         if not self.slug:  # Slug nur generieren, wenn es noch leer ist
             base_slug = slugify(self.title)

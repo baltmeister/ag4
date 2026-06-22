@@ -57,6 +57,11 @@ def article_comments_view(request, news_paper_id, article_id):
     comment_type = ContentType.objects.get_for_model(Comment)
     config = get_the_config()
 
+    # Agreement aus Session lesen
+    agreement_choice = None
+    if config.pro_contra_layout:
+        agreement_choice = request.session.get(f'agreement_{article_id}')
+
     # Nur loggen wenn kein Pro/Contra (dort läuft es über POST in detailed_article)
     if not config.pro_contra_layout:
         CommentPageClick.objects.create(
@@ -257,6 +262,7 @@ def article_comments_view(request, news_paper_id, article_id):
         'right_label': right_label,
         'left_side': left_side,
         'right_side': right_side,
+        'agreement_choice': agreement_choice,
     }
     return render(request, 'comments/article_comments.html', context)
 

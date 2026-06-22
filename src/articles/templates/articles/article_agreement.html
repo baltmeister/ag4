@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} - Ihre Meinung{% endblock %}
+
+{% block content %}
+<div class="styled-article-container" style="text-align: center;">
+    <h2>{{ question }}</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="agreement" value="agree">
+            <button type="submit" class="ui button" style="width:100%; font-size: 1.1em; padding: 15px;">
+                Stimme zu
+            </button>
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="agreement" value="disagree">
+            <button type="submit" class="ui button" style="width:100%; font-size: 1.1em; padding: 15px;">
+                Stimme nicht zu
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
