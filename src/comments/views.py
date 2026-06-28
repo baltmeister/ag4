@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from django.contrib.contenttypes.models import ContentType
-from analytics.models import UserContentPosition, CommentPageClick
+from analytics.models import UserContentPosition, CommentPageClick, CommentClick
 import random
 
 from .models import Comment
@@ -361,6 +361,12 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
             return redirect('comments:detailed-comment', comment_id=comment_id, news_paper_id=newspaper.id, article_id=article.id)
         else:
             messages.error(request, _("Es gab einen Fehler beim Hinzufügen deiner Antwort."))
+    
+    CommentClick.objects.create(
+        user=request.user,
+        comment_id=comment_id,
+        side=comment.side,
+    )
 
     # Kontext für das Template
     context = {

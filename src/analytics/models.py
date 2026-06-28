@@ -37,6 +37,11 @@ class CommentPageClick(models.Model):
     class Meta:
         verbose_name = "Comment Page Click"
 
+class CommentClick(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment_id = models.IntegerField()
+    side = models.CharField(max_length=10, blank=True, default='')
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
