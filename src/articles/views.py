@@ -152,9 +152,10 @@ def detailed_article(request, news_paper_id, slug):
     config = get_the_config()
 
     if config.pro_contra_layout:
-        return redirect('articles:article-agreement',
-                        news_paper_id=news_paper_id,
-                        slug=slug)
+        if not request.session.get(f'agreement_{article.id}'):
+            return redirect('articles:article-agreement',
+                            news_paper_id=news_paper_id,
+                            slug=slug)
         # In Pro/Contra-Layout nur Kommentare mit 'pro' oder 'contra' zählen
         public_comments_count = article.comments.filter(
             Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)
@@ -186,9 +187,40 @@ def detailed_article(request, news_paper_id, slug):
 def article_agreement(request, news_paper_id, slug):
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
     article = get_object_or_404(Article, slug=slug, news_paper_id=news_paper_id)
+    
+    from configuration.models import get_the_config
+    config = get_the_config()
 
     question = article.agreement_question if article.agreement_question else \
         "Stimmen Sie dem Inhalt dieses Artikels zu?"
+
+    from django.contrib.contenttypes.models import ContentType
+    from comments.models import Comment as CommentModel
+    comment_type = ContentType.objects.get_for_model(CommentModel)
+
+    layout_entry = UserContentPosition.objects.filter(
+        user=request.user,
+        content_type=comment_type,
+        object_id=0
+    ).first()
+
+    if not layout_entry:
+        import random
+        choice = random.choice(['agree_left', 'disagree_left'])
+        layout_entry = UserContentPosition.objects.create(
+            user=request.user,
+            content_type=comment_type,
+            object_id=0,
+            position=1 if choice == 'agree_left' else 2
+        )
+
+    if layout_entry.position == 1:
+        left_value, left_label = 'agree', 'Stimme zu'
+        right_value, right_label = 'disagree', 'Stimme nicht zu'
+    else:
+        left_value, left_label = 'disagree', 'Stimme nicht zu'
+        right_value, right_label = 'agree', 'Stimme zu'
+
 
     if request.method == "POST":
         choice = request.POST.get('agreement')
@@ -200,13 +232,17 @@ def article_agreement(request, news_paper_id, slug):
             )
             # Auswahl in Session speichern für Kommentarseite
             request.session[f'agreement_{article.id}'] = choice
-            return redirect('comments:article-comments',
+            return redirect('articles:detailed-article',
                             news_paper_id=newspaper.id,
-                            article_id=article.id)
+                            slug=slug)
 
     context = {
         'article': article,
         'newspaper': newspaper,
         'question': question,
+        'left_value': left_value,
+        'left_label': left_label,
+        'right_value': right_value,
+        'right_label': right_label,
     }
     return render(request, 'articles/article_agreement.html', context)

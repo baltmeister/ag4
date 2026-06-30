@@ -8,16 +8,16 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px;">
         <form method="post">
             {% csrf_token %}
-            <input type="hidden" name="agreement" value="agree">
+            <input type="hidden" name="agreement" value="{{ left_value }}">
             <button type="submit" class="ui button" style="width:100%; font-size: 1.1em; padding: 15px;">
-                Stimme zu
+                {{ left_label }}
             </button>
         </form>
         <form method="post">
             {% csrf_token %}
-            <input type="hidden" name="agreement" value="disagree">
+            <input type="hidden" name="agreement" value="{{ right_value }}">
             <button type="submit" class="ui button" style="width:100%; font-size: 1.1em; padding: 15px;">
-                Stimme nicht zu
+                {{ right_label }}
             </button>
         </form>
     </div>
