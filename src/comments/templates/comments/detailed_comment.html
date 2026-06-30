@@ -51,7 +51,9 @@
                 >
                     <i class="thumbs up outline icon"></i>
                 </button>
-                <span id="like-count-{{ comment.id }}">{{ comment.liked.count }}</span>
+                {% if like_dislike_count_visible %}
+                    <span id="like-count-{{ comment.id }}">{{ comment.like_count }}</span>
+                {% endif %}
 
                 <!-- Dislike Button -->
                 <button 
@@ -62,7 +64,9 @@
                 >
                     <i class="thumbs down outline icon"></i>
                 </button>
-                <span id="dislike-count-{{ comment.id }}">{{ comment.disliked.count }}</span>
+                {% if like_dislike_count_visible %}
+                    <span id="dislike-count-{{ comment.id }}">{{ comment.dislike_count }}</span>
+                {% endif %}
             </div>
             {% endif %}
             <br>

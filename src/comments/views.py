@@ -138,6 +138,7 @@ def article_comments_view(request, news_paper_id, article_id):
 
     # 4. Sekundärkommentare für jeden Hauptkommentar randomisieren und laden
     for comment in main_comments:
+        comment.like_count, comment.dislike_count = get_like_counts(comment, profile)
         # IDs der Antworten abrufen
         reply_ids = comment.replies.filter(
             Q(tag__isnull=True) | Q(tag="") | Q(tag=condition_tag)  # Filter für passende Tags
@@ -253,6 +254,7 @@ def article_comments_view(request, news_paper_id, article_id):
         'comments': main_comments,  # Hauptkommentare in zufälliger Reihenfolge
         'comment_form': comment_form,
         'like_dislike_enabled': config.like_dislike_enabled,  # Wert an das Template übergeben
+        'like_dislike_count_visible': config.like_dislike_count_visible,
         'pro_contra_layout': config.pro_contra_layout,
         'pro_comments': pro_comments,
         'contra_comments': contra_comments,
@@ -280,6 +282,7 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
     profile = Profile.objects.get(user=request.user)
     newspaper = get_object_or_404(NewsPaper, id=news_paper_id)
     comment_type = ContentType.objects.get_for_model(Comment)
+    comment.like_count, comment.dislike_count = get_like_counts(comment, profile)
     config = get_the_config()
 
 
@@ -376,7 +379,7 @@ def detailed_comment_view(request, news_paper_id, article_id, comment_id):
         'newspaper': newspaper,
         'secondary_comment_form': SecondaryCommentModelForm(),
         'like_dislike_enabled': config.like_dislike_enabled,  # Wert an das Template übergeben
-
+        'like_dislike_count_visible': config.like_dislike_count_visible,
     }
     return render(request, 'comments/detailed_comment.html', context)
 
@@ -392,12 +395,13 @@ def like_unlike_comment(request):
         profile = Profile.objects.get(user=request.user)
 
         action = toggle_like(profile, comment, request)
+        like_count, dislike_count = get_like_counts(comment, profile)
 
         return JsonResponse({
             "success": True,
             "action": action,  # "like" oder "unlike"
-            "new_like_count": comment.liked.count(),
-            "new_dislike_count": comment.disliked.count(),
+            "new_like_count": like_count,
+            "new_dislike_count": dislike_count,
             'user_has_liked': profile in comment.liked.all(),  # Benutzer hat geliked
             'user_has_disliked': profile in comment.disliked.all()  # Benutzer hat disliked
         })
@@ -414,13 +418,14 @@ def dislike_undislike_comment(request):
         profile = Profile.objects.get(user=request.user)
 
         action = toggle_dislike(profile, comment, request)
+        like_count, dislike_count = get_like_counts(comment, profile)
 
         # JSON-Antwort für AJAX zurückgeben
         return JsonResponse({
             'success': True,
             'action': action,
-            'new_like_count': comment.liked.count(),
-            'new_dislike_count': comment.disliked.count(),
+            'new_like_count': like_count,
+            'new_dislike_count': dislike_count,
             'user_has_liked': profile in comment.liked.all(),  # Benutzer hat geliked
             'user_has_disliked': profile in comment.disliked.all()  # Benutzer hat disliked
         })
@@ -475,3 +480,12 @@ def toggle_dislike(profile, comment, request):
 
     # Rückgabe der Aktion an das Frontend
     return action
+
+def get_like_counts(comment, profile):
+    user_liked = profile in comment.liked.all()
+    user_disliked = profile in comment.disliked.all()
+    
+    like_count = comment.base_likes + (1 if user_liked else 0)
+    dislike_count = comment.base_dislikes + (1 if user_disliked else 0)
+    
+    return like_count, dislike_count

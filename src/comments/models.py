@@ -20,6 +20,9 @@ class Comment(models.Model):
         'self', null=True, blank=True, on_delete=models.CASCADE, related_name="replies", help_text="<strong>Wichtig!</strong> Muss ein Hauptkommentar sein, der zum oben ausgewählten Artikel zugeordnet ist"
     )
     is_public = models.BooleanField(default=True,  help_text="Muss öffentlich sein, um der Versuchsperson angezeigt zu werden.") # Gibt an, ob der Kommentar öffentlich ist
+    base_likes = models.IntegerField(default=0, help_text="Vom Admin festgelegte Basis-Anzahl an Likes.")
+    base_dislikes = models.IntegerField(default=0, help_text="Vom Admin festgelegte Basis-Anzahl an Dislikes.")
+    
     liked = models.ManyToManyField(Profile, related_name="liked_comments_set", blank=True, help_text="Nur möglich für Primärkommentare.")
     disliked = models.ManyToManyField(Profile, related_name="disliked_comments_set", blank=True, help_text="Nur möglich für Primärkommentare.")
     SIDE_CHOICES = [('pro', 'Pro'), ('contra', 'Contra')]

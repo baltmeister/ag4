@@ -61,7 +61,9 @@
                                         <button type="submit" class="ui icon button">
                                             <i class="thumbs up outline icon"></i>
                                         </button>
-                                        <span>{{ comment.liked.count }}</span>
+                                        {% if like_dislike_count_visible %}
+                                            <span>{{ comment.like_count }}</span>
+                                        {% endif %}
                                     </form>
                                     <form method="post" action="{% url 'comments:dislike-comment-view' %}">
                                         {% csrf_token %}
@@ -69,7 +71,9 @@
                                         <button type="submit" class="ui icon button">
                                             <i class="thumbs down outline icon"></i>
                                         </button>
-                                        <span>{{ comment.disliked.count }}</span>
+                                        {% if like_dislike_count_visible %}
+                                            <span>{{ comment.dislike_count }}</span>
+                                        {% endif %}
                                     </form>
                                 </div>
                             {% endif %}
@@ -112,7 +116,9 @@
                                         <button type="submit" class="ui icon button">
                                             <i class="thumbs up outline icon"></i>
                                         </button>
-                                        <span>{{ comment.liked.count }}</span>
+                                        {% if like_dislike_count_visible %}
+                                            <span>{{ comment.like_count }}</span>
+                                        {% endif %}
                                     </form>
                                     <form method="post" action="{% url 'comments:dislike-comment-view' %}">
                                         {% csrf_token %}
@@ -120,7 +126,9 @@
                                         <button type="submit" name="comment_id" value="{{ comment.id }}" class="ui icon button">
                                             <i class="thumbs down outline icon"></i>
                                         </button>
-                                        <span>{{ comment.disliked.count }}</span>
+                                        {% if like_dislike_count_visible %}
+                                            <span>{{ comment.dislike_count }}</span>
+                                        {% endif %}
                                     </form>
                                 </div>
                             {% endif %}
@@ -167,7 +175,9 @@
                                     <button type="submit" class="ui icon button">
                                         <i class="thumbs up outline icon"></i>
                                     </button>
-                                    <span>{{ comment.liked.count }}</span>
+                                    {% if like_dislike_count_visible %}
+                                        <span>{{ comment.like_count }}</span>
+                                    {% endif %}
                                 </form>
                                 <form method="post" action="{% url 'comments:dislike-comment-view' %}">
                                     {% csrf_token %}
@@ -175,7 +185,9 @@
                                     <button type="submit" class="ui icon button">
                                         <i class="thumbs down outline icon"></i>
                                     </button>
-                                    <span>{{ comment.disliked.count }}</span>
+                                    {% if like_dislike_count_visible %}
+                                        <span>{{ comment.dislike_count }}</span>
+                                    {% endif %}
                                 </form>
                             </div>
                         {% endif %}

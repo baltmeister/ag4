@@ -5,14 +5,12 @@ from django.db import models
 
 class Configuration(models.Model):
     like_dislike_enabled = models.BooleanField(default=True)
+    like_dislike_count_visible = models.BooleanField(default=True, help_text="Zeigt die Like/Dislike-Zähler für die Versuchspersonen an.")
     management_token = models.CharField(default="changeme", max_length=100)
     is_timer_enabled = models.BooleanField(default=False)
     max_session_duration = models.PositiveIntegerField(default=3600)
     is_active = models.BooleanField(default=False, help_text="Markiert die aktive Konfiguration")
-    pro_contra_layout = models.BooleanField(
-        default=False,
-        help_text="Kommentare in Pro/Contra-Spalten anzeigen"
-    )
+    pro_contra_layout = models.BooleanField(default=False, help_text="Kommentare in Pro/Contra-Spalten anzeigen")
 
     START_VIEW_CHOICES = [
         ('newspapers', 'Zeitungsübersicht'),

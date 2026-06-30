@@ -18,6 +18,7 @@ admin.site.unregister(SocialToken)
 class ConfigurationAdmin(admin.ModelAdmin):
     list_display = [
         "like_dislike_enabled",
+        "like_dislike_count_visible",
         "is_timer_enabled",
         "max_session_duration",
         "management_token",
@@ -29,6 +30,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
     ]
     fields = [
         "like_dislike_enabled",
+        "like_dislike_count_visible",
         "is_timer_enabled",
         "max_session_duration",
         "management_token",
