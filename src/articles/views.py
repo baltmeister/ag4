@@ -213,6 +213,7 @@ def article_agreement(request, news_paper_id, slug):
             object_id=0,
             position=1 if choice == 'agree_left' else 2
         )
+        print('agreement')
 
     if layout_entry.position == 1:
         left_value, left_label = 'agree', 'Stimme zu'

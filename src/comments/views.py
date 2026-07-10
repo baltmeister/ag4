@@ -203,7 +203,7 @@ def article_comments_view(request, news_paper_id, article_id):
         contra_comments = [c for c in main_comments if c.side == 'contra']
 
         # Reihenfolge der Spalten zufällig aber stabil pro User
-        layout_type = ContentType.objects.get_for_model(Comment)  # kannst du auch eigenes "Layout" Model machen
+        layout_type = ContentType.objects.get_for_model(Comment)
 
         layout_entry = UserContentPosition.objects.filter(
             user=user,
@@ -219,6 +219,7 @@ def article_comments_view(request, news_paper_id, article_id):
                 object_id=0,
                 position=1 if choice == 'pro_left' else 2
             )
+            print('commentssss')
         if layout_entry.position == 1:
             order = 'pro_left'
         else:
