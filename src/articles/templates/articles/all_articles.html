@@ -28,7 +28,7 @@ Artikelübersicht
               <span>Veröffentlicht am: {{ article.created_at|date:"F j, Y" }}</span>
             </h5>
             <p class="article-description">{{ article.content|truncatewords:20 }}</p>
-            <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="ui button read-more">
+            <a href="{% url 'articles:detailed-article' news_paper_id=newspaper.id slug=article.slug %}" class="ui button read-more" data-article-id="{{ article.id }}" data-action="article_click">
               Mehr lesen
             </a>
           </div>

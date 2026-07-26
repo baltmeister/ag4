@@ -226,12 +226,11 @@ def article_agreement(request, news_paper_id, slug):
     if request.method == "POST":
         choice = request.POST.get('agreement')
         if choice in ('agree', 'disagree'):
-            CommentPageClick.objects.create(
+            ArticleClick.objects.create(
                 user=request.user,
                 article_id=article.id,
-                click_type=choice
+                agreement=choice
             )
-            # Auswahl in Session speichern für Kommentarseite
             request.session[f'agreement_{article.id}'] = choice
             return redirect('articles:detailed-article',
                             news_paper_id=newspaper.id,

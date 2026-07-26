@@ -16,9 +16,14 @@ class NewspaperClick(models.Model):
         verbose_name = "Newspaper Click"
 
 class ArticleClick(models.Model):
+    AGREEMENT_CHOICES = [
+        ('agree', 'Stimme zu'),
+        ('disagree', 'Stimme nicht zu'),
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     article_id = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    agreement = models.CharField(max_length=10, choices=AGREEMENT_CHOICES, blank=True, null=True)
 
     class Meta:
         verbose_name = "Article Click"

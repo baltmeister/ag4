@@ -57,18 +57,28 @@ def article_comments_view(request, news_paper_id, article_id):
     comment_type = ContentType.objects.get_for_model(Comment)
     config = get_the_config()
 
+    click_session_key = f'comment_page_clicked_{article_id}'
+    if not request.session.get(click_session_key):
+        if config.pro_contra_layout:
+            # Agreement-Auswahl aus Session lesen
+            choice = request.session.get(f'agreement_{article_id}', 'comments')
+            CommentPageClick.objects.create(
+                user=user,
+                article_id=article_id,
+                click_type=choice
+            )
+        else:
+            CommentPageClick.objects.create(
+                user=user,
+                article_id=article_id,
+                click_type='comments'
+            )
+        request.session[click_session_key] = True
+
     # Agreement aus Session lesen
     agreement_choice = None
     if config.pro_contra_layout:
         agreement_choice = request.session.get(f'agreement_{article_id}')
-
-    # Nur loggen wenn kein Pro/Contra (dort läuft es über POST in detailed_article)
-    if not config.pro_contra_layout:
-        CommentPageClick.objects.create(
-            user=user,
-            article_id=article_id,
-            click_type='comments'
-        )
 
     # Prüfen, ob der Nutzer eine Bedingung hat
     condition_tag = profile.condition.tag if profile.condition else None
